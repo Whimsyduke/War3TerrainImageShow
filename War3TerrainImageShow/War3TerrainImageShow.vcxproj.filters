@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{6f9b6aa2-acab-47d6-9b75-7e479c86cd1c}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{75d3cdc8-9580-40b9-ba08-2f2db4c8e3e6}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="LibraryWar3Map">
+      <UniqueIdentifier>{5f859666-4596-4481-8728-ce239c9a8620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibraryWar3Map\header">
+      <UniqueIdentifier>{4655d4af-d6f3-4ffd-979b-e4f0dba082f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibraryWar3Map\source">
+      <UniqueIdentifier>{2d495a12-6916-4d51-b405-73acf63c843b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="war3terrainimageshow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_war3terrainimageshow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_war3terrainimageshow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_war3terrainimageshow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="War3MapLibrary\lib\War3MapEnvironment.cpp">
+      <Filter>LibraryWar3Map\source</Filter>
+    </ClCompile>
+    <ClCompile Include="War3MapLibrary\lib\War3SLK.cpp">
+      <Filter>LibraryWar3Map\source</Filter>
+    </ClCompile>
+    <ClCompile Include="War3MapLibrary\lib\War3TerrainTexture.cpp">
+      <Filter>LibraryWar3Map\source</Filter>
+    </ClCompile>
+    <ClCompile Include="War3MapLibrary\lib\War3SLKterrain.cpp">
+      <Filter>LibraryWar3Map\source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="war3terrainimageshow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="war3terrainimageshow.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="war3terrainimageshow.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_war3terrainimageshow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3CommonDefines.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3DataFormat.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3MapEnvironment.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3SLK.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3TerrainTexture.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+    <ClInclude Include="War3MapLibrary\include\War3SLKterrain.h">
+      <Filter>LibraryWar3Map\header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="War3TerrainImageShow.rc" />
+  </ItemGroup>
+</Project>
