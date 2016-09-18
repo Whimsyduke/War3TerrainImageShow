@@ -101,9 +101,9 @@ namespace LibraryWar3Map
 		TileSetType tilesetMainType; // 地形主题(1B, char)
 		bool useCustom;// 自定义纹理集(4B, int)
 		short tileTypeCount;// 地形纹理数量 (4B, int) (<16)
-		QString tileTypeID[CONST_WAR3MAXMAPTILESETTYPE];// 地形纹理列表(4B*tileTypeCount, char[4]*tileTypeCount)
+		QString tileTypeID[CONST_WAR3MAXMAPTILESETTYPE + 1];// 地形纹理列表(4B*tileTypeCount, char[4]*tileTypeCount)
 		short cliffTypeCount;// 悬崖纹理计数(4B, int) (<16)
-		QString cliffTypeID[CONST_WAR3MAXMAPCLIFFTYPE];// 悬崖纹理列表(4B*cliffTypeCount, char[4]*cliffTypeCount)
+		QString cliffTypeID[CONST_WAR3MAXMAPCLIFFTYPE + 1];// 悬崖纹理列表(4B*cliffTypeCount, char[4]*cliffTypeCount)
 		int width;// 地形宽度+1,宽方向结点数量(4B, int)
 		int height;// 地形高度+1,高方向结点数量(4B, int)
 		float centerX;// 地形基准坐标X，其他配置文件使用

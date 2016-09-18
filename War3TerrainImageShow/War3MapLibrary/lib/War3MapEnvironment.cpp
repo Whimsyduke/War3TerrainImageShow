@@ -23,10 +23,10 @@
 #define WAR3MAPENVIRONMENT_TILEPOINT_WATERDEEPFLAG 0x0004
 #define WAR3MAPENVIRONMENT_TILEPOINT_WATER 0x003F
 #define WAR3MAPENVIRONMENT_TILEPOINT_WATERBASE 0x2000
-#define WAR3MAPENVIRONMENT_TILEPOINT_CAMERAFLAG 0x0008
-#define WAR3MAPENVIRONMENT_TILEPOINT_WATERSHALLOWFLAG 0x0004
-#define WAR3MAPENVIRONMENT_TILEPOINT_BLIGHTFLAG 0x0002
-#define WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG 0x0001
+#define WAR3MAPENVIRONMENT_TILEPOINT_CAMERAFLAG 0x0800
+#define WAR3MAPENVIRONMENT_TILEPOINT_WATERSHALLOWFLAG 0x0400
+#define WAR3MAPENVIRONMENT_TILEPOINT_BLIGHTFLAG 0x0200
+#define WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG 0x0100
 #define WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE 4
 #define WAR3MAPENVIRONMENT_TILEPOINT_TILETYPEDETAILS 0x000F
 #define WAR3MAPENVIRONMENT_TILEPOINT_CILFFTYPE 4
@@ -53,14 +53,14 @@ namespace LibraryWar3Map
 		//chars[6] = bytes[6];
 		//datas[6] = WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[6]);
 		shadowFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[1]) & WAR3MAPENVIRONMENT_TILEPOINT_SHADOWFLAG) != 0;
-		groundHeight = (((int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[1]) & WAR3MAPENVIRONMENT_TILEPOINT_HEIGHT)) << 8) + (int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[0]) & 0x0FF) - WAR3MAPENVIRONMENT_TILEPOINT_HEIGHTBASE;
+		groundHeight = (((int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[1]) & WAR3MAPENVIRONMENT_TILEPOINT_HEIGHT)) << 8) + (int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[0])) - WAR3MAPENVIRONMENT_TILEPOINT_HEIGHTBASE;
 		waterDeepFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[3]) & WAR3MAPENVIRONMENT_TILEPOINT_WATERDEEPFLAG) != 0;
-		waterHeight = (((int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[3]) & WAR3MAPENVIRONMENT_TILEPOINT_WATER)) << 8) + (int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[2]) & 0x0FF) - WAR3MAPENVIRONMENT_TILEPOINT_WATERBASE;
+		waterHeight = (((int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[3]) & WAR3MAPENVIRONMENT_TILEPOINT_WATER)) << 8) + (int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[3])) - WAR3MAPENVIRONMENT_TILEPOINT_WATERBASE;
 		cameraFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_CAMERAFLAG) != 0;
 		waterShallowFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_WATERSHALLOWFLAG) != 0;
 		blightFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_BLIGHTFLAG) != 0;
 		rampFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG) != 0;
-		tileTypeID = enviroment->GetTileType(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[5]) >> WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE);
+		tileTypeID = enviroment->GetTileType(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) >> WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE);
 		textureDetails = (short)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[5]) & WAR3MAPENVIRONMENT_TILEPOINT_TILETYPEDETAILS);
 		cliffTypeID = enviroment->GetCilffType(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[6]) >> WAR3MAPENVIRONMENT_TILEPOINT_CILFFTYPE);
 		cliffLevel = (short)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[6]) & WAR3MAPENVIRONMENT_TILEPOINT_CILFFLEVEL);
@@ -191,7 +191,7 @@ namespace LibraryWar3Map
 		cliffTypeCount = War3DataFormatGetStoredBytesValue(buffer, WAR3MAPENVIRONMENT_CLIFFTYPECOUNT);
 
 		//地面纹理列表
-		for (size_t i = 0; i < cliffTypeCount; i++)
+		for (size_t i = 1; i <= cliffTypeCount; i++)
 		{
 			Q_ASSERT_X(!stream.atEnd(), "War3MapEnvironment::War3MapEnvironment", "Error file is not complete!");
 			stream.readRawData(buffer, WAR3MAPENVIRONMENT_CLIFFTYPE);
@@ -300,9 +300,9 @@ namespace LibraryWar3Map
 		Q_ASSERT_X(x >= 0 && y >= 0 && x < width && y < height, "War3MapEnvironment::GetGridTerrainImage", "Error out map!");
 		QHash<QString, int> terrainTypes;
 		terrainTypes[tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID()] = 1;
-		qDebug(tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID().toStdString().c_str());
+		//qDebug(tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID().toStdString().c_str());
 		QString terrainType = tilePointTable[x + (y + 1) * width].GetTileTypeID();
-		qDebug(terrainType.toStdString().c_str());
+		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
 			terrainTypes[terrainType] += 2;
@@ -312,7 +312,7 @@ namespace LibraryWar3Map
 			terrainTypes[terrainType] = 2;
 		}
 		terrainType = tilePointTable[x + 1 + y * width].GetTileTypeID();
-		qDebug(terrainType.toStdString().c_str());
+		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
 			terrainTypes[terrainType] += 4;
@@ -322,7 +322,7 @@ namespace LibraryWar3Map
 			terrainTypes[terrainType] = 4;
 		}
 		terrainType = tilePointTable[x + y * width].GetTileTypeID();
-		qDebug(terrainType.toStdString().c_str());
+		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
 			terrainTypes[terrainType] += 8;
@@ -333,11 +333,11 @@ namespace LibraryWar3Map
 		}
 		QImage gridTerrainImage(WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, QImage::Format_ARGB32);
 		QPainter painter(&gridTerrainImage);
-		qDebug("Count:%d", terrainTypes.count());
+		//qDebug("Count:%d", terrainTypes.count());
 		//painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(terrainTypes.begin().key())->GetGridTerrainTexture(terrainTypes.begin().value()));
 		for (QHash<QString, int>::const_iterator iterator = terrainTypes.begin(); iterator != terrainTypes.end(); iterator++)
 		{
-			qDebug("Type:%4s, Index:%d", iterator.key().toStdString().c_str(), iterator.value());
+			//qDebug("Type:%4s, Index:%d", iterator.key().toStdString().c_str(), iterator.value());
 			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(iterator.key())->GetGridTerrainTexture(iterator.value()));
 		}
 		return gridTerrainImage;
