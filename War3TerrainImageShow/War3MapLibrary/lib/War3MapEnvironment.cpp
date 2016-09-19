@@ -27,8 +27,7 @@
 #define WAR3MAPENVIRONMENT_TILEPOINT_WATERSHALLOWFLAG 0x0400
 #define WAR3MAPENVIRONMENT_TILEPOINT_BLIGHTFLAG 0x0200
 #define WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG 0x0100
-#define WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE 4
-#define WAR3MAPENVIRONMENT_TILEPOINT_TILETYPEDETAILS 0x000F
+#define WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE 0x000F
 #define WAR3MAPENVIRONMENT_TILEPOINT_CILFFTYPE 4
 #define WAR3MAPENVIRONMENT_TILEPOINT_CILFFLEVEL 0x000F
 
@@ -59,9 +58,10 @@ namespace LibraryWar3Map
 		cameraFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_CAMERAFLAG) != 0;
 		waterShallowFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_WATERSHALLOWFLAG) != 0;
 		blightFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_BLIGHTFLAG) != 0;
-		rampFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG) != 0;
-		tileTypeID = enviroment->GetTileType(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) >> WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE);
-		textureDetails = (short)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[5]) & WAR3MAPENVIRONMENT_TILEPOINT_TILETYPEDETAILS);
+		rampFlag = (WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_RAMPFLAG) != 0; 
+		tileTypeIndex = WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[4]) & WAR3MAPENVIRONMENT_TILEPOINT_TILETYPE;
+		tileTypeID = enviroment->GetTileType(tileTypeIndex);
+		textureDetails = (int)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[5]));
 		cliffTypeID = enviroment->GetCilffType(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[6]) >> WAR3MAPENVIRONMENT_TILEPOINT_CILFFTYPE);
 		cliffLevel = (short)(WAR3DEFINE_COMMON_DATA_TRANSLATE(bytes[6]) & WAR3MAPENVIRONMENT_TILEPOINT_CILFFLEVEL);
 	}
@@ -108,6 +108,11 @@ namespace LibraryWar3Map
 	bool TilePointStruct::GetRampFlag()
 	{
 		return rampFlag;
+	}
+
+	int TilePointStruct::GetTileTypeIndex()
+	{
+		return tileTypeIndex;
 	}
 
 	QString TilePointStruct::GetTileTypeID()
@@ -191,7 +196,7 @@ namespace LibraryWar3Map
 		cliffTypeCount = War3DataFormatGetStoredBytesValue(buffer, WAR3MAPENVIRONMENT_CLIFFTYPECOUNT);
 
 		//地面纹理列表
-		for (size_t i = 1; i <= cliffTypeCount; i++)
+		for (size_t i = 0; i < cliffTypeCount; i++)
 		{
 			Q_ASSERT_X(!stream.atEnd(), "War3MapEnvironment::War3MapEnvironment", "Error file is not complete!");
 			stream.readRawData(buffer, WAR3MAPENVIRONMENT_CLIFFTYPE);
@@ -298,10 +303,10 @@ namespace LibraryWar3Map
 	{
 		Q_ASSERT_X(isValid, "War3MapEnvironment::GetGridTerrainImage", "Error not valid!");
 		Q_ASSERT_X(x >= 0 && y >= 0 && x < width && y < height, "War3MapEnvironment::GetGridTerrainImage", "Error out map!");
-		QHash<QString, int> terrainTypes;
-		terrainTypes[tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID()] = 1;
+		QMap<int, int> terrainTypes;
+		terrainTypes[tilePointTable[x + 1 + (y + 1) * width].GetTileTypeIndex()] = 1;
 		//qDebug(tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID().toStdString().c_str());
-		QString terrainType = tilePointTable[x + (y + 1) * width].GetTileTypeID();
+		int terrainType = tilePointTable[x + (y + 1) * width].GetTileTypeIndex();
 		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
@@ -311,7 +316,7 @@ namespace LibraryWar3Map
 		{
 			terrainTypes[terrainType] = 2;
 		}
-		terrainType = tilePointTable[x + 1 + y * width].GetTileTypeID();
+		terrainType = tilePointTable[x + 1 + y * width].GetTileTypeIndex();
 		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
@@ -321,7 +326,7 @@ namespace LibraryWar3Map
 		{
 			terrainTypes[terrainType] = 4;
 		}
-		terrainType = tilePointTable[x + y * width].GetTileTypeID();
+		terrainType = tilePointTable[x + y * width].GetTileTypeIndex();
 		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
@@ -335,11 +340,16 @@ namespace LibraryWar3Map
 		QPainter painter(&gridTerrainImage);
 		//qDebug("Count:%d", terrainTypes.count());
 		//painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(terrainTypes.begin().key())->GetGridTerrainTexture(terrainTypes.begin().value()));
-		for (QHash<QString, int>::const_iterator iterator = terrainTypes.begin(); iterator != terrainTypes.end(); iterator++)
+		for (QMap<int, int>::const_iterator iterator = terrainTypes.begin(); iterator != terrainTypes.end(); iterator++)
 		{
 			//qDebug("Type:%4s, Index:%d", iterator.key().toStdString().c_str(), iterator.value());
-			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(iterator.key())->GetGridTerrainTexture(iterator.value()));
+			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(iterator.key()))->GetGridTerrainTexture(iterator.value()));
 		}
 		return gridTerrainImage;
+	}
+
+	QString War3MapEnvironment::GetTypeIDbyIndex(int index)
+	{
+		return tileTypeID[index];
 	}
 }

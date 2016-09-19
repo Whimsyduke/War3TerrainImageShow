@@ -30,12 +30,13 @@ namespace LibraryWar3Map
 		bool GetWaterShallowFlag();
 		bool GetBlightFlag();
 		bool GetRampFlag();
+		int GetTileTypeIndex();
 		QString GetTileTypeID();
 		short GetTextureDetails();
 		QString GetCliffTypeID();
 		short GetCliffLevel();
 	private:
-		int groundHeight;// 地面高度(2B, short)
+		int groundHeight;// 地面高度(2B-1b, short)
 		bool shadowFlag;// 阴影范围标旗(1b, bool)
 		int waterHeight;// 水面高度(2B-1b, short)
 		bool waterDeepFlag;// 深水面标旗(1b, bool)
@@ -43,10 +44,11 @@ namespace LibraryWar3Map
 		bool waterShallowFlag;// 浅水面标旗(1b, bool)
 		bool blightFlag;// 荒芜地表标旗(1b, bool)
 		bool rampFlag;// 斜坡标旗(1b, bool)
+		int tileTypeIndex; // 地面纹理序号 (2b, int)，同tileTypeID
 		QString tileTypeID; // 地面纹理类型 (2b, int)
-		short textureDetails;// 纹理细节(2b, int)
+		int textureDetails;// 纹理细节(1B, int)
 		QString cliffTypeID;// 悬崖纹理类型(2b, int)
-		short cliffLevel;// 悬崖层数(2b, int)
+		int cliffLevel;// 悬崖层数(2b, int)
 	};
 
 	class War3MapEnvironment
@@ -92,6 +94,7 @@ namespace LibraryWar3Map
 		int GetMapHeight();
 		TilePointStruct * GetTilePointStruct(int x, int y);
 		QImage GetGridTerrainImage(int x, int y, War3SLK<War3SLKterrainStruct> &terrainSLK);
+		QString GetTypeIDbyIndex(int index);
 	private:
 		bool isValid;
 
@@ -100,10 +103,10 @@ namespace LibraryWar3Map
 		int fileVersion;// 文件版本(4B, int)
 		TileSetType tilesetMainType; // 地形主题(1B, char)
 		bool useCustom;// 自定义纹理集(4B, int)
-		short tileTypeCount;// 地形纹理数量 (4B, int) (<16)
-		QString tileTypeID[CONST_WAR3MAXMAPTILESETTYPE + 1];// 地形纹理列表(4B*tileTypeCount, char[4]*tileTypeCount)
-		short cliffTypeCount;// 悬崖纹理计数(4B, int) (<16)
-		QString cliffTypeID[CONST_WAR3MAXMAPCLIFFTYPE + 1];// 悬崖纹理列表(4B*cliffTypeCount, char[4]*cliffTypeCount)
+		int tileTypeCount;// 地形纹理数量 (4B, int) (<16)
+		QString tileTypeID[CONST_WAR3MAXMAPTILESETTYPE];// 地形纹理列表(4B*tileTypeCount, char[4]*tileTypeCount)
+		int cliffTypeCount;// 悬崖纹理计数(4B, int) (<16)
+		QString cliffTypeID[CONST_WAR3MAXMAPCLIFFTYPE];// 悬崖纹理列表(4B*cliffTypeCount, char[4]*cliffTypeCount)
 		int width;// 地形宽度+1,宽方向结点数量(4B, int)
 		int height;// 地形高度+1,高方向结点数量(4B, int)
 		float centerX;// 地形基准坐标X，其他配置文件使用
