@@ -299,15 +299,29 @@ namespace LibraryWar3Map
 		return &tilePointTable[x + y * width];
 	}
 
+	//采用的随机纹理由地形贴图左下角Tile的随机样式决定，随机样式的值为16位无符号整数,对应为随机部分贴图（右半侧）序号，特别的，0x10代表左侧0x0F号贴图，0x11代表左侧0x00号贴图，其它取对16的模。生成时先铺四个Tile中序号（地图采用的纹理的序号）最小的一个的0x00位置贴图，再按照合并后的四角样式添加。
 	QImage War3MapEnvironment::GetGridTerrainImage(int x, int y, War3SLK<War3SLKterrainStruct> &terrainSLK)
 	{
 		Q_ASSERT_X(isValid, "War3MapEnvironment::GetGridTerrainImage", "Error not valid!");
 		Q_ASSERT_X(x >= 0 && y >= 0 && x < width && y < height, "War3MapEnvironment::GetGridTerrainImage", "Error out map!");
+		QImage gridTerrainImage(WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, QImage::Format_ARGB32);
+		QPainter painter(&gridTerrainImage);
 		QMap<int, int> terrainTypes;
-		terrainTypes[tilePointTable[x + 1 + (y + 1) * width].GetTileTypeIndex()] = 1;
-		//qDebug(tilePointTable[x + 1 + (y + 1) * width].GetTileTypeID().toStdString().c_str());
-		int terrainType = tilePointTable[x + (y + 1) * width].GetTileTypeIndex();
-		//qDebug(terrainType.toStdString().c_str());
+		int baseType = tilePointTable[x + y * width].GetTileTypeIndex();
+		int details = tilePointTable[x + y * width].GetTextureDetails(); 
+		bool haveDetails = terrainSLK.GetTileStruct(GetTypeIDbyIndex(baseType))->IsExistRandomDetails();
+		terrainTypes[baseType] = 8;
+
+		int terrainType = tilePointTable[x + 1 + (y + 1) * width].GetTileTypeIndex();
+		if (terrainTypes.contains(terrainType))
+		{
+			terrainTypes[terrainType] += 1;
+		}
+		else
+		{
+			terrainTypes[terrainType] = 1;
+		}
+		terrainType = tilePointTable[x + (y + 1) * width].GetTileTypeIndex();
 		if (terrainTypes.contains(terrainType))
 		{
 			terrainTypes[terrainType] += 2;
@@ -317,7 +331,6 @@ namespace LibraryWar3Map
 			terrainTypes[terrainType] = 2;
 		}
 		terrainType = tilePointTable[x + 1 + y * width].GetTileTypeIndex();
-		//qDebug(terrainType.toStdString().c_str());
 		if (terrainTypes.contains(terrainType))
 		{
 			terrainTypes[terrainType] += 4;
@@ -326,25 +339,20 @@ namespace LibraryWar3Map
 		{
 			terrainTypes[terrainType] = 4;
 		}
-		terrainType = tilePointTable[x + y * width].GetTileTypeIndex();
-		//qDebug(terrainType.toStdString().c_str());
-		if (terrainTypes.contains(terrainType))
+		painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(terrainTypes.begin().key()))->GetGridTerrainTexture(0));
+		if (terrainTypes.size() == 1 && haveDetails)
 		{
-			terrainTypes[terrainType] += 8;
+			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(baseType))->GetGridTerrainTextureRandomDetails(details));
 		}
 		else
 		{
-			terrainTypes[terrainType] = 8;
+			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(baseType))->GetGridTerrainTextureRandomDetails(details));
+			for (QMap<int, int>::const_iterator iterator = terrainTypes.begin(); iterator != terrainTypes.end(); iterator++)
+			{
+				painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(iterator.key()))->GetGridTerrainTexture(iterator.value()));
+			}
 		}
-		QImage gridTerrainImage(WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, QImage::Format_ARGB32);
-		QPainter painter(&gridTerrainImage);
-		//qDebug("Count:%d", terrainTypes.count());
-		//painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(terrainTypes.begin().key())->GetGridTerrainTexture(terrainTypes.begin().value()));
-		for (QMap<int, int>::const_iterator iterator = terrainTypes.begin(); iterator != terrainTypes.end(); iterator++)
-		{
-			//qDebug("Type:%4s, Index:%d", iterator.key().toStdString().c_str(), iterator.value());
-			painter.drawImage(gridTerrainImage.rect(), terrainSLK.GetTileStruct(GetTypeIDbyIndex(iterator.key()))->GetGridTerrainTexture(iterator.value()));
-		}
+		Q_ASSERT_X(terrainTypes.size(), "War3MapEnvironment::GetGridTerrainImage", "Error not draw any texture!");
 		return gridTerrainImage;
 	}
 

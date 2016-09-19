@@ -1,7 +1,7 @@
 #include "War3MapLibrary\include\War3SLKterrain.h"
 namespace LibraryWar3Map
 {
-	War3SLKterrainStruct::War3SLKterrainStruct() : notLoadPixMap(true)
+	War3SLKterrainStruct::War3SLKterrainStruct() : notLoadPixMap(true), existRandomDetails(false)
 	{
 	}
 
@@ -26,6 +26,7 @@ namespace LibraryWar3Map
 			inBeta = false;
 			version = false;
 			notLoadPixMap = true;
+			existRandomDetails = false;
 		}
 	}
 
@@ -46,7 +47,7 @@ namespace LibraryWar3Map
 		QString StructConvertTo,
 		bool StructInBeta,
 		int StructVersion
-		) : notLoadPixMap(true)
+		) : notLoadPixMap(true), existRandomDetails(false)
 	{
 		SetIndex(StructIndex);
 		tileID = StructTileID;
@@ -114,8 +115,50 @@ namespace LibraryWar3Map
 		{
 			notLoadPixMap = false;
 			Q_ASSERT_X(image.load(path), "War3SLKterrainStruct::GetFullTerrainTexture", ("Error load terrain texture: (" + path + ")!").toStdString().c_str());
+			existRandomDetails = (image.width() != image.height());
 		}
 
 		return image.copy(index / 4 * WAR3DEFINE_TERRAIN_TILESIZE, index % 4 * WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE);
+	}
+
+	QImage War3SLKterrainStruct::GetGridTerrainTextureRandomDetails(int index)
+	{
+		if (notLoadPixMap)
+		{
+			notLoadPixMap = false;
+			Q_ASSERT_X(image.load(path), "War3SLKterrainStruct::GetFullTerrainTexture", ("Error load terrain texture: (" + path + ")!").toStdString().c_str());
+			existRandomDetails = (image.width() != image.height());
+		}
+		if (existRandomDetails)
+		{
+			int detailsIndex;
+			switch (index)
+			{
+			case 0x11:
+				return image.copy(0, 0, WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE);
+			case 0x10:
+				detailsIndex = 0x0F; 
+				return image.copy(3 * WAR3DEFINE_TERRAIN_TILESIZE, 3 * WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE);
+			default:
+				detailsIndex = index % 16; 
+				return image.copy((detailsIndex % 4 + 4) * WAR3DEFINE_TERRAIN_TILESIZE, detailsIndex / 4 * WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE);
+			}
+		}
+		else
+		{
+			return image.copy(index / 4 * WAR3DEFINE_TERRAIN_TILESIZE, index % 4 * WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE, WAR3DEFINE_TERRAIN_TILESIZE);
+		}
+	}
+
+	bool War3SLKterrainStruct::IsExistRandomDetails()
+	{
+		if (notLoadPixMap)
+		{
+			notLoadPixMap = false;
+			Q_ASSERT_X(image.load(path), "War3SLKterrainStruct::GetFullTerrainTexture", ("Error load terrain texture: (" + path + ")!").toStdString().c_str());
+			existRandomDetails = (image.width() != image.height());
+		}
+
+		return existRandomDetails;
 	}
 }

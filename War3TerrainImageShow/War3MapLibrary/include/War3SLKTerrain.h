@@ -40,6 +40,8 @@ namespace LibraryWar3Map
 
 		QImage GetFullTerrainTexture();
 		QImage GetGridTerrainTexture(int index);
+		QImage GetGridTerrainTextureRandomDetails(int index);
+		bool IsExistRandomDetails();
 	private:
 		QString tileID;
 		int cliffSet;
@@ -47,6 +49,7 @@ namespace LibraryWar3Map
 		QString file;
 		QString path;
 		bool notLoadPixMap;
+		bool existRandomDetails;
 		QImage image;
 		QString comment;
 		QString name;
