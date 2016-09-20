@@ -249,7 +249,7 @@ namespace LibraryWar3Map
 		{
 			if (index <= 0xF)
 			{
-				return WAR3SLKTERRAIN_QPIXMAP_NOTHINGTYPE;
+				return WAR3SLKTERRAIN_TYPE_NOTHINGTYPE;
 			}
 			Q_ASSERT_X(false, "War3MapEnvironment::GetTileType", "Error index!");
 			return "";

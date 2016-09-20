@@ -3,11 +3,10 @@
 
 #include <QImage>
 
+#include "War3MapLibrary\include\War3CommonDefines.h"
 #include "War3MapLibrary\include\War3SLK.h"
 
-#define WAR3SLKTERRAIN_QPIXMAP_BASEPATH "War3TexturesAndSetting\\"
-#define WAR3SLKTERRAIN_QPIXMAP_EXTENSION ".png"
-#define WAR3SLKTERRAIN_QPIXMAP_NOTHINGTYPE "noth"
+#define WAR3SLKTERRAIN_TYPE_NOTHINGTYPE "noth"
 
 namespace LibraryWar3Map
 {

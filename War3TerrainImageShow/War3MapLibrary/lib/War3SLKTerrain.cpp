@@ -7,15 +7,14 @@ namespace LibraryWar3Map
 
 	War3SLKterrainStruct::War3SLKterrainStruct(int StructIndex, QString StructTileID)
 	{
-		if (StructTileID == WAR3SLKTERRAIN_QPIXMAP_NOTHINGTYPE)
+		if (StructTileID == WAR3SLKTERRAIN_TYPE_NOTHINGTYPE)
 		{
 			SetIndex(StructIndex);
-			tileID = WAR3SLKTERRAIN_QPIXMAP_NOTHINGTYPE;
+			tileID = WAR3SLKTERRAIN_TYPE_NOTHINGTYPE;
 			cliffSet = -1;
 			dir = "TerrainArt\\Nothing";
 			file = "nothing";
-			path = WAR3SLKTERRAIN_QPIXMAP_BASEPATH + dir + "\\" + file + WAR3SLKTERRAIN_QPIXMAP_EXTENSION;
-			//pixmap.load(path);
+			path = WAR3DEFINE_WAR3SLK_BASEPATH + dir + "\\" + file + WAR3DEFINE_WAR3SLK_EXTENSION;
 			comment = "Nothing";
 			name = "WESTRING_TILE_NOTHING";
 			buildable = false;
@@ -54,7 +53,7 @@ namespace LibraryWar3Map
 		cliffSet = StructCliffSet;
 		dir = StructDir;
 		file = StructFile;
-		path = WAR3SLKTERRAIN_QPIXMAP_BASEPATH + dir + "\\" + file + WAR3SLKTERRAIN_QPIXMAP_EXTENSION;
+		path = WAR3DEFINE_WAR3SLK_BASEPATH + dir + "\\" + file + WAR3DEFINE_WAR3SLK_EXTENSION;
 		//pixmap.load(path);
 		comment = StructComment;
 		name = StructName;
@@ -82,7 +81,7 @@ namespace LibraryWar3Map
 		Q_ASSERT_X(tranOK, "War3SLKterrainStruct::ReadDatas", "Error data!");
 		dir = datas[2];
 		file = datas[3];
-		path = WAR3SLKTERRAIN_QPIXMAP_BASEPATH + dir + "\\" + file + WAR3SLKTERRAIN_QPIXMAP_EXTENSION;
+		path = WAR3DEFINE_WAR3SLK_BASEPATH + dir + "\\" + file + WAR3DEFINE_WAR3SLK_EXTENSION;
 		//pixmap.load(path);
 		comment = datas[4];
 		name = datas[5];
